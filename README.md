@@ -1,8 +1,5 @@
-First function named "gaborFilterBank.m" generates a custom-sized Gabor filter bank. It creates a u*v array, whose elements are m by n matrices; each matrix being a 2-D Gabor filter. 
+The first function named "gaborFilterBank.m" generates a custom-sized Gabor filter bank. It creates a u by v cell array, whose elements are m by n matrices; each matrix being a 2-D Gabor filter. The second function named "gaborFeatures.m" extracts the Gabor features of an input image. It creates a column vector, consisting of the Gabor features of the input image. The feature vectors are normalized to zero mean and unit variance. At the end of each file there is a Show section that plots the filters and shows the filtered images. These are only for illustration purpose, and you can comment them as you wish.
 
-Second function named "gaborFeatures.m" extracts the Gabor features of the image. It creates a column vector, consisting of the Gabor features of the input image. 
-
-At the end of each file there is a Show section that plots the filters and shows the filtered images. These are only for illustration purpose, and you can comment them as you wish. 
 
 More details can be found in:
 
@@ -11,5 +8,5 @@ http://dx.doi.org/10.1016/j.eswa.2015.06.025
 
 
 (C)	Mohammad Haghighat, University of Miami
-    haghighat@ieee.org
-    PLEASE CITE THE ABOVE PAPER IF YOU USE THIS CODE.
+	haghighat@ieee.org
+	PLEASE CITE THE ABOVE PAPER IF YOU USE THIS CODE.
