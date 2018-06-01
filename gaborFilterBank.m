@@ -1,4 +1,4 @@
-function gaborArray = gaborFilterBank(u,v,m,n)
+function gaborArray = gaborFilterBank(u,v,m,n, displaybool)
 
 % GABORFILTERBANK generates a custum Gabor filter bank. 
 % It creates a u by v cell array, whose elements are m by n matrices; 
@@ -10,6 +10,8 @@ function gaborArray = gaborFilterBank(u,v,m,n)
 %       v	:	No. of orientations (usually set to 8)
 %       m	:	No. of rows in a 2-D Gabor filter (an odd integer number, usually set to 39)
 %       n	:	No. of columns in a 2-D Gabor filter (an odd integer number, usually set to 39)
+% dispboo   :   false (default). Change to true to show the filter bank and
+%               magnitudes.
 % 
 % Output:
 %       gaborArray: A u by v array, element of which are m by n 
@@ -36,8 +38,10 @@ function gaborArray = gaborFilterBank(u,v,m,n)
 
 
 
-if (nargin ~= 4)    % Check correct number of arguments
+if nargin < 4    % Check correct number of arguments
     error('There must be four input arguments (Number of scales and orientations and the 2-D size of the filter)!')
+elseif nargin < 5 
+    dispboo = false;
 end
 
 
@@ -49,45 +53,47 @@ fmax = 0.25;
 gama = sqrt(2);
 eta = sqrt(2);
 
-for i = 1:u
-    
-    fu = fmax/((sqrt(2))^(i-1));
-    alpha = fu/gama;
-    beta = fu/eta;
-    
-    for j = 1:v
-        tetav = ((j-1)/v)*pi;
-        gFilter = zeros(m,n);
-        
-        for x = 1:m
-            for y = 1:n
-                xprime = (x-((m+1)/2))*cos(tetav)+(y-((n+1)/2))*sin(tetav);
-                yprime = -(x-((m+1)/2))*sin(tetav)+(y-((n+1)/2))*cos(tetav);
-                gFilter(x,y) = (fu^2/(pi*gama*eta))*exp(-((alpha^2)*(xprime^2)+(beta^2)*(yprime^2)))*exp(1i*2*pi*fu*xprime);
-            end
-        end
-        gaborArray{i,j} = gFilter;
-        
+[yy, xx] = meshgrid(1:m,1:n);
+xx = (xx-((m+1)/2));
+yy = (yy-((n+1)/2));
+
+fu = fmax./((sqrt(2)).^(0:(u-1)));
+alphav = fu./gama;
+beta = fu./eta;
+thetav = linspace(0,(1-1/v)*pi,v);
+
+for ix = 1:u    
+    for jx = 1:v
+       
+        XP = xx.*cos(thetav(jx))+yy.*sin(thetav(jx));
+        YP = -xx.*sin(thetav(jx))+yy.*cos(thetav(jx));
+        gaborArray{ix,jx} = (fu(ix)^2/(pi*gama*eta)).*exp(-((alphav(ix)^2).*(XP.^2) + ...
+            (beta(ix)^2).*(YP.^2))).*exp(1i*2*pi*fu(ix).*XP);
+
     end
 end
 
-
 %% Show Gabor filters (Please comment this section if not needed!)
 
+if dispboo
 % Show magnitudes of Gabor filters:
 figure('NumberTitle','Off','Name','Magnitudes of Gabor filters');
-for i = 1:u
-    for j = 1:v        
-        subplot(u,v,(i-1)*v+j);        
-        imshow(abs(gaborArray{i,j}),[]);
+for ix = 1:u
+    for jx = 1:v        
+        subplot(u,v,(ix-1)*v+jx);        
+        imshow(abs(gaborArray{ix,jx}),[]);
     end
 end
 
 % Show real parts of Gabor filters:
 figure('NumberTitle','Off','Name','Real parts of Gabor filters');
-for i = 1:u
-    for j = 1:v        
-        subplot(u,v,(i-1)*v+j);        
-        imshow(real(gaborArray{i,j}),[]);
+for ix = 1:u
+    for jx = 1:v        
+        subplot(u,v,(ix-1)*v+jx);
+        imagesc(real(gaborArray{ix,jx}));
+        axis image;
+        xticklabels([]);
+        yticklabels([]);
     end
+end
 end
